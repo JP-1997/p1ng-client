@@ -4,14 +4,14 @@ import {
   BrowserRouter,
   Route,
   Redirect,
-  Switch,
   RouteComponentProps,
 } from "react-router-dom";
 import ChatRoomScreen from "./components/ChatRoomScreen";
+import AnimatedSwitch from "./components/AnimatedSwitch";
 
 const App: React.FC = () => (
   <BrowserRouter>
-    <Switch>
+    <AnimatedSwitch>
       <Route exact path="/chats" component={ChatsListScreen} />
       <Route
         exact
@@ -20,7 +20,7 @@ const App: React.FC = () => (
           <ChatRoomScreen chatId={match.params.chatId} />
         )}
       />
-    </Switch>
+    </AnimatedSwitch>
     <Route exact path="/" render={redirectToChats} />
   </BrowserRouter>
 );
