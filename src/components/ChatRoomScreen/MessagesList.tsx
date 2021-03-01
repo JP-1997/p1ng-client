@@ -10,6 +10,22 @@ const Container = styled.div`
   flex: 2;
   overflow-y: overlay;
   padding: 0 15px;
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(13deg, #03a3ff 10%, #da47ff 35%);
+    border-radius: 15px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(13deg, #da47ff 14%, #03a3ff 64%);
+  }
+  ::-webkit-scrollbar-track {
+    background: #ffffff;
+    border-radius: 10px;
+  }
 `;
 
 const MessageItem = styled.div`
