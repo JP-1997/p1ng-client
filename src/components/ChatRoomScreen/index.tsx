@@ -4,6 +4,7 @@ import styled from "styled-components";
 import ChatNavBar from "./ChatNavbar";
 import { History } from "history";
 import MessagesList from "./MessagesList";
+import MessageInput from "./MessageInput";
 
 const Container = styled.div`
   background: url(/assets/chat_background_2.jpg);
@@ -77,6 +78,7 @@ const ChatRoomScreen: React.FC<ChatRoomScreenParams> = ({
     <Container>
       <ChatNavBar chat={chat} history={history} />
       {chat.messages && <MessagesList messages={chat.messages} />}
+      <MessageInput />
     </Container>
   );
 };
