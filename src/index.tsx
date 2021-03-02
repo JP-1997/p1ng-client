@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { ApolloProvider } from "@apollo/react-hooks";
+import client from "./client";
 
 const theme = createMuiTheme({
   palette: {
@@ -15,7 +17,9 @@ const theme = createMuiTheme({
 ReactDOM.render(
   <React.StrictMode>
     <MuiThemeProvider theme={theme}>
-      <App />
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
     </MuiThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
