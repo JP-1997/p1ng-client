@@ -1,10 +1,12 @@
 import React from "react";
-import { useMemo, useState, useCallback } from "react";
+import { useCallback } from "react";
 import styled from "styled-components";
 import ChatNavBar from "./ChatNavbar";
 import { History } from "history";
 import MessagesList from "./MessagesList";
 import MessageInput from "./MessageInput";
+import gql from "graphql-tag";
+import { useApolloClient, useQuery } from "@apollo/react-hooks";
 
 const Container = styled.div`
   background: url(/assets/chat_background_2.jpg);
@@ -14,19 +16,19 @@ const Container = styled.div`
   height: 100vh;
 `;
 
-const getChatQuery = `
-    query GetChat($chatId: ID!) {
-        chat(chatId: $chatId) {
-            id
-            name
-            picture
-            messages {
-                id
-                content
-                createdAt
-            }
-        }
+const getChatQuery = gql`
+  query GetChat($chatId: ID!) {
+    chat(chatId: $chatId) {
+      id
+      name
+      picture
+      messages {
+        id
+        content
+        createdAt
+      }
     }
+  }
 `;
 
 interface ChatRoomScreenParams {
@@ -53,24 +55,11 @@ const ChatRoomScreen: React.FC<ChatRoomScreenParams> = ({
   chatId,
   history,
 }) => {
-  const [chat, setChat] = useState<OptionalChatQueryResult>(null);
-
-  useMemo(async () => {
-    const body = await fetch(`${process.env.REACT_APP_SERVER_URL}/graphql`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: getChatQuery,
-        variables: { chatId },
-      }),
-    });
-    const {
-      data: { chat },
-    } = await body.json();
-    setChat(chat);
-  }, [chatId]);
+  const client = useApolloClient();
+  const { data } = useQuery<any>(getChatQuery, {
+    variables: { chatId },
+  });
+  const chat = data?.chat;
 
   const onSendMessage = useCallback(
     (content: string) => {
@@ -80,14 +69,21 @@ const ChatRoomScreen: React.FC<ChatRoomScreenParams> = ({
         id: (chat.messages.length + 10).toString(),
         createdAt: new Date(),
         content,
+        __typename: "Chat",
       };
 
-      setChat({
-        ...chat,
-        messages: chat.messages.concat(message),
+      client.writeQuery({
+        query: getChatQuery,
+        variables: { chatId },
+        data: {
+          chat: {
+            ...chat,
+            messages: chat.messages.concat(message),
+          },
+        },
       });
     },
-    [chat]
+    [chat, chatId, client]
   );
 
   if (!chat) return null;
