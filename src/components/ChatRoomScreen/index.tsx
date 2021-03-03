@@ -8,6 +8,7 @@ import MessageInput from "./MessageInput";
 import gql from "graphql-tag";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import * as queries from "../../graphql/queries";
+import * as fragments from "../../graphql/fragments";
 
 const Container = styled.div`
   background: url(/assets/chat_background_2.jpg);
@@ -20,26 +21,19 @@ const Container = styled.div`
 const getChatQuery = gql`
   query GetChat($chatId: ID!) {
     chat(chatId: $chatId) {
-      id
-      name
-      picture
-      messages {
-        id
-        content
-        createdAt
-      }
+      ...FullChat
     }
   }
+  ${fragments.fullChat}
 `;
 
 const addMessageMutation = gql`
   mutation AddMessage($chatId: ID!, $content: String!) {
     addMessage(chatId: $chatId, content: $content) {
-      id
-      content
-      createdAt
+      ...Message
     }
   }
+  ${fragments.message}
 `;
 
 interface ChatRoomScreenParams {
